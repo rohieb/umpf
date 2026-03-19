@@ -160,6 +160,8 @@ abort() {
 }
 
 cleanup() {
+	local ret=$?
+
 	if [ -n "${series_out}" ]; then
 		exec {series_out}<&-
 		unset series_out
@@ -170,6 +172,8 @@ cleanup() {
 	fi
 	rm -rf "${GIT_DIR}/refs/umpf"
 	rm -rf "${STATE}"
+
+	return ${ret}
 }
 
 usage() {
