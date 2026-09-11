@@ -91,11 +91,15 @@ declare -A flag_extraversion
 
 flag_extraversion[val]="replace"
 flag_extraversion[values]="replace conflictfree"
+flag_extraversion[help_replace]="with tag: assign kernel EXTRAVERSION unconditionally"
+flag_extraversion[help_conflictfree]="with tag: assign kernel EXTRAVERSION suitable for non-umpf collaborators"
 
 declare -A flag_upstreamstatus
 
 flag_upstreamstatus[val]="none"
 flag_upstreamstatus[values]="none insert"
+flag_upstreamstatus[help_none]="no special behaviour"
+flag_upstreamstatus[help_insert]="with tag: insert 'Upstream-Status: Pending' footers into patches"
 
 ##############
 
@@ -238,7 +242,24 @@ usage() {
 
 	  init <seriesfile>          manually create an umpf series file by
 	                             answering questions
+
+	Flags:
 EOF
+
+	for flagname in "${SUPPORTED_FLAGS[@]}"; do
+		declare +n flag
+		flag=flag_${flagname}
+		declare -n flag
+		for val in ${flag[values]}; do
+			is_default=
+			if [ ${flag[val]} = "$val" ]; then
+				is_default=" (default)"
+			fi
+			printf '  %-26s %s%s\n' "${flagname}=${val}" \
+				"${flag["help_${val}"]}" "${is_default}"
+		done
+		echo
+	done
 }
 
 ### setup ###
